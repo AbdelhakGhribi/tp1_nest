@@ -22,7 +22,6 @@ export class CvListener {
     return await this.handleHistory('CV_DELETE', payload);
   }
   async handleHistory(action: string, payload: any) {
-
     let result = await this.historyRepository.save({
       action : action,
       userId: payload.userId,

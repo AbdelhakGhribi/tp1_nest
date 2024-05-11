@@ -158,20 +158,17 @@ export class CvsControllerV2 {
     return this.cvsService.removeSse(id,userId);
   }
 
-  @Sse('sse')
-  sse(@User() user) {
-    return fromEvent(this.eventEmitter, OPERATIONS.CV_ADD).pipe(
-      map((payload: any )=> 
-      {
-        console.log(payload)
-        if (user.id === payload.userId || user.roles.includes('admin'))
-          return 
-            new MessageEvent(OPERATIONS.CV_ADD, {data : payload})
-          
-        
-      }
-      )
-    );
-  }
 
-}
+  @Sse('sse')
+  sse(@User() user): Observable<MessageEvent> {
+    return fromEvent(this.eventEmitter, OPERATIONS.CV_ADD).pipe(
+      map((payload: any) => {
+        console.log(payload);
+        if (user.id === payload.userId || user.roles.includes('admin')) {
+          return new MessageEvent(OPERATIONS.CV_ADD, { data: payload });
+        } else {
+          return new MessageEvent('default', { data: null });
+        }
+      })
+    );
+  }}

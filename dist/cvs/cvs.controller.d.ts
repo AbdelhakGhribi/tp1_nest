@@ -28,5 +28,5 @@ export declare class CvsControllerV2 {
     update(id: string, updateCvDto: UpdateCvDto, req: Request): Promise<void>;
     uploadFile(file: Express.Multer.File, id: string): void;
     remove(id: string, req: Request): Promise<import("typeorm").DeleteResult>;
-    sse(user: any): Observable<void>;
+    sse(user: any): Observable<MessageEvent>;
 }

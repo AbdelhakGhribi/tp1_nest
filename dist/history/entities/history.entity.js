@@ -26,11 +26,11 @@ __decorate([
 ], HistoryEntity.prototype, "action", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], HistoryEntity.prototype, "userId", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
-    __metadata("design:type", Number)
+    __metadata("design:type", String)
 ], HistoryEntity.prototype, "cvId", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),

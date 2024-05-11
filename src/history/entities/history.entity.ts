@@ -18,10 +18,10 @@ export class HistoryEntity {
     action: string;
 
     @Column()
-    userId: number;
+    userId: string;
   
     @Column()
-    cvId: number;
+    cvId: string;
 
     @CreateDateColumn()
     createdAt: Date;

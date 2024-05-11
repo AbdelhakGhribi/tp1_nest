@@ -153,9 +153,12 @@ let CvsControllerV2 = class CvsControllerV2 {
     sse(user) {
         return (0, rxjs_1.fromEvent)(this.eventEmitter, cv_events_1.OPERATIONS.CV_ADD).pipe((0, rxjs_1.map)((payload) => {
             console.log(payload);
-            if (user.id === payload.userId || user.roles.includes('admin'))
-                return;
-            new MessageEvent(cv_events_1.OPERATIONS.CV_ADD, { data: payload });
+            if (user.id === payload.userId || user.roles.includes('admin')) {
+                return new MessageEvent(cv_events_1.OPERATIONS.CV_ADD, { data: payload });
+            }
+            else {
+                return new MessageEvent('default', { data: null });
+            }
         }));
     }
 };
@@ -235,7 +238,7 @@ __decorate([
     __param(0, (0, user_decorator_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", rxjs_1.Observable)
 ], CvsControllerV2.prototype, "sse", null);
 exports.CvsControllerV2 = CvsControllerV2 = __decorate([
     (0, common_1.Controller)({
