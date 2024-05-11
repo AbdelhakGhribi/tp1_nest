@@ -1,5 +1,4 @@
 import {
-  Controller,
   Get,
   Post,
   Body,
@@ -10,7 +9,8 @@ import {
   Query,
   Req,
   ParseIntPipe,
-  UploadedFile, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, UseGuards
+  UploadedFile, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, UseGuards,
+  Controller
 } from '@nestjs/common';
 import { CvsService } from './cvs.service';
 import { CreateCvDto } from './dto/create-cv.dto';
@@ -24,6 +24,9 @@ import {JwtAuthGuard} from "../authentication/Guards/jwt-auth.guard";
 import {Request} from "express";
 import {Roles} from "../authentication/decorators/roles.decorator";
 import {RolesAuthGuard} from "../authentication/Guards/role-auth.guard";
+import { Observable } from 'rxjs';
+import { OPERATIONS } from 'src/SseEv/cv.events';
+import { SseService } from 'src/SseEv/sseenv.service';
 
 
 @Controller(
@@ -100,7 +103,7 @@ export class CvsControllerV2 {
   @Post('')
   create(@Body() createCvDto: CreateCvDto,@Req()req:Request) {
     let userId=req['userInfo']['user-id']
-    return this.cvsService.createV2(createCvDto,userId);
+    return this.cvsService.createSse(createCvDto,userId);
   }
 
   @Get()

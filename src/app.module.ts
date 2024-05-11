@@ -17,9 +17,11 @@ import {JwtModule} from "@nestjs/jwt";
 import process from "process";
 import { RolesAuthGuard} from "./authentication/Guards/role-auth.guard";
 import {APP_GUARD} from "@nestjs/core";
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+      EventEmitterModule.forRoot(),
       CvsModule,
       TypeOrmModule.forRoot(
           {

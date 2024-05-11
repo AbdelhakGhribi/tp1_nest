@@ -1,0 +1,5 @@
+import { cvHistoryDto } from './create-history.dto';
+declare const UpdateHistoryDto_base: import("@nestjs/mapped-types").MappedType<Partial<cvHistoryDto>>;
+export declare class UpdateHistoryDto extends UpdateHistoryDto_base {
+}
+export {};

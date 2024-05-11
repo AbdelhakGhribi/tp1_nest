@@ -18,6 +18,9 @@ import {SkillEntity} from "../skills/entities/skill.entity";
 import {UserEntity} from "../users/entities/user.entity";
 import {CreateUserDto} from "../users/dto/create-user.dto";
 import {UpdateUserDto} from "../users/dto/update-user.dto";
+import { SseService } from 'src/SseEv/sseenv.service';
+import { EVENTS, OPERATIONS } from 'src/SseEv/cv.events';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class CvsService {
@@ -25,8 +28,9 @@ export class CvsService {
       @InjectRepository(CvEntity)
       private cvRepository:Repository<CvEntity>,
       @InjectRepository(UserEntity)
-      private userRepository:Repository<UserEntity>
-
+      private userRepository:Repository<UserEntity>,
+      private readonly sseService: SseService,
+      private eventEmitter: EventEmitter2
   )
   {}
 
@@ -56,6 +60,16 @@ export class CvsService {
 
   }
 
+  async createSse (createCvDto:CreateCvDto,userId:string){
+    const createdCv=await this.cvRepository.save(createCvDto);
+    if (createdCv){
+      this.eventEmitter.emit(OPERATIONS.CV_ADD,{
+        userId:userId,
+        cv:createdCv
+      })
+    }
+    return createdCv   
+  }
 
 
   async findAll(pageNumber:number=1,pageSize:number=3):Promise<CvEntity[]> {
@@ -117,6 +131,31 @@ export class CvsService {
 
   }
 
+  async updateSse(id: string, updateCvDto: DeepPartial<CvEntity>,userId:string){
+    const cv:CvEntity=await this.cvRepository.findOne({
+      where:{id:id},
+      relations:['user']
+    }
+    );
+    if(!cv){
+      throw new NotFoundException(`cv d'id ${id} n'existe pas dans la base`)
+    }
+    let user:UserEntity= await this.userRepository.findOneBy({id:userId})
+    if(!user ||!cv.user||cv.user.id!=user.id) {
+      throw new UnauthorizedException()
+    }
+    const updatedCv={
+      id:id,
+      ...updateCvDto
+    }
+    if (updatedCv){
+      this.eventEmitter.emit(OPERATIONS.CV_UPDATE,{
+        userId:userId,
+        cv:updatedCv
+      })
+    }
+  }
+
   async remove(id: string):Promise<DeleteResult> {
     const result= await this.cvRepository.delete(id)
     if(!result.affected){
@@ -149,6 +188,28 @@ export class CvsService {
 
 
   }
-
-
+  
+  async removeSse(id: string,userId:string):Promise<DeleteResult> {
+    const cv:CvEntity=await this.cvRepository.findOne({
+          where:{id:id},
+          relations:['user']
+        }
+    );
+    if(!cv){
+      throw new NotFoundException(`cv d'id ${id} n'existe pas dans la base`)
+    }
+    let user:UserEntity= await this.userRepository.findOneBy({id:userId})
+    if(!user ||!cv.user||cv.user.id!=user.id) {
+      throw new UnauthorizedException()
+    }
+    const result= await this.cvRepository.delete(id)
+    if(!result.affected){
+      throw new NotFoundException(`cv d'id ${id} n'existe pas dans la base`)
+    this.eventEmitter.emit(OPERATIONS.CV_DELETE,{
+      userId:userId,
+      cv:cv
+    })
+  }
+    return result
+  }
 }
