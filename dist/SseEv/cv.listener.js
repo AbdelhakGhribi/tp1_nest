@@ -13,11 +13,9 @@ exports.CvListener = void 0;
 const common_1 = require("@nestjs/common");
 const event_emitter_1 = require("@nestjs/event-emitter");
 const cv_events_1 = require("./cv.events");
-const sseenv_service_1 = require("./sseenv.service");
 const typeorm_1 = require("typeorm");
 let CvListener = class CvListener {
-    constructor(sseService, historyRepository) {
-        this.sseService = sseService;
+    constructor(historyRepository) {
         this.historyRepository = historyRepository;
     }
     async handleCreation(payload) {
@@ -30,25 +28,11 @@ let CvListener = class CvListener {
         return await this.handleHistory('CV_DELETE', payload);
     }
     async handleHistory(action, payload) {
-        try {
-            this.sseService.sendToAdmins({
-                actionType: action,
-                data: payload,
-            });
-            this.sseService.sendToSpecificUser(payload.userId, {
-                actionType: action,
-                data: payload,
-            });
-        }
-        catch (error) {
-            console.log(error);
-        }
         let result = await this.historyRepository.save({
             action: action,
             userId: payload.userId,
             cvId: payload.cv.id,
         });
-        return result;
     }
 };
 exports.CvListener = CvListener;
@@ -72,7 +56,6 @@ __decorate([
 ], CvListener.prototype, "handleDelete", null);
 exports.CvListener = CvListener = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [sseenv_service_1.SseService,
-        typeorm_1.Repository])
+    __metadata("design:paramtypes", [typeorm_1.Repository])
 ], CvListener);
 //# sourceMappingURL=cv.listener.js.map

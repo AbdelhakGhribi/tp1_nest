@@ -13,13 +13,12 @@ const history_controller_1 = require("./history.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const history_entity_1 = require("./entities/history.entity");
 const cv_listener_1 = require("../SseEv/cv.listener");
-const sseenv_module_1 = require("../SseEv/sseenv.module");
 let CvHistoryModule = class CvHistoryModule {
 };
 exports.CvHistoryModule = CvHistoryModule;
 exports.CvHistoryModule = CvHistoryModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([history_entity_1.HistoryEntity]), sseenv_module_1.SseEnvModule],
+        imports: [typeorm_1.TypeOrmModule.forFeature([history_entity_1.HistoryEntity])],
         controllers: [history_controller_1.CvHistoryController],
         providers: [history_service_1.CvHistoryService, cv_listener_1.CvListener],
         exports: [cv_listener_1.CvListener],

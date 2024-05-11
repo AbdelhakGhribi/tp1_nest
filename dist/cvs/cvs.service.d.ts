@@ -2,14 +2,12 @@ import { CreateCvDto } from './dto/create-cv.dto';
 import { DeepPartial, DeleteResult, Repository } from "typeorm";
 import { CvEntity } from "./entities/cv.entity";
 import { UserEntity } from "../users/entities/user.entity";
-import { SseService } from 'src/SseEv/sseenv.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 export declare class CvsService {
     private cvRepository;
     private userRepository;
-    private readonly sseService;
     private eventEmitter;
-    constructor(cvRepository: Repository<CvEntity>, userRepository: Repository<UserEntity>, sseService: SseService, eventEmitter: EventEmitter2);
+    constructor(cvRepository: Repository<CvEntity>, userRepository: Repository<UserEntity>, eventEmitter: EventEmitter2);
     randomize(): CreateCvDto;
     create(createCvDto: CreateCvDto): Promise<CreateCvDto & CvEntity>;
     createV2(createCvDto: CreateCvDto, userId: string): Promise<CvEntity>;

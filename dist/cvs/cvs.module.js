@@ -13,14 +13,13 @@ const cvs_controller_1 = require("./cvs.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const cv_entity_1 = require("./entities/cv.entity");
 const user_entity_1 = require("../users/entities/user.entity");
-const sseenv_service_1 = require("../SseEv/sseenv.service");
 let CvsModule = class CvsModule {
 };
 exports.CvsModule = CvsModule;
 exports.CvsModule = CvsModule = __decorate([
     (0, common_1.Module)({
         controllers: [cvs_controller_1.CvsController, cvs_controller_1.CvsControllerV2],
-        providers: [cvs_service_1.CvsService, sseenv_service_1.SseService],
+        providers: [cvs_service_1.CvsService],
         imports: [typeorm_1.TypeOrmModule.forFeature([cv_entity_1.CvEntity, user_entity_1.UserEntity])]
     })
 ], CvsModule);

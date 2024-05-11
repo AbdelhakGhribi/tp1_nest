@@ -18,7 +18,6 @@ import {SkillEntity} from "../skills/entities/skill.entity";
 import {UserEntity} from "../users/entities/user.entity";
 import {CreateUserDto} from "../users/dto/create-user.dto";
 import {UpdateUserDto} from "../users/dto/update-user.dto";
-import { SseService } from 'src/SseEv/sseenv.service';
 import { EVENTS, OPERATIONS } from 'src/SseEv/cv.events';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -29,7 +28,6 @@ export class CvsService {
       private cvRepository:Repository<CvEntity>,
       @InjectRepository(UserEntity)
       private userRepository:Repository<UserEntity>,
-      private readonly sseService: SseService,
       private eventEmitter: EventEmitter2
   )
   {}

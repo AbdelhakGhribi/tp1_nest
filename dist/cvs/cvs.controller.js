@@ -21,6 +21,10 @@ const platform_express_1 = require("@nestjs/platform-express");
 const jwt_auth_guard_1 = require("../authentication/Guards/jwt-auth.guard");
 const roles_decorator_1 = require("../authentication/decorators/roles.decorator");
 const role_auth_guard_1 = require("../authentication/Guards/role-auth.guard");
+const rxjs_1 = require("rxjs");
+const cv_events_1 = require("../SseEv/cv.events");
+const event_emitter_1 = require("@nestjs/event-emitter");
+const user_decorator_1 = require("../decorators/user.decorator");
 let CvsController = class CvsController {
     constructor(cvsService) {
         this.cvsService = cvsService;
@@ -115,8 +119,9 @@ exports.CvsController = CvsController = __decorate([
     __metadata("design:paramtypes", [cvs_service_1.CvsService])
 ], CvsController);
 let CvsControllerV2 = class CvsControllerV2 {
-    constructor(cvsService) {
+    constructor(cvsService, eventEmitter) {
         this.cvsService = cvsService;
+        this.eventEmitter = eventEmitter;
     }
     random() {
         return this.cvsService.randomize();
@@ -136,14 +141,22 @@ let CvsControllerV2 = class CvsControllerV2 {
     }
     update(id, updateCvDto, req) {
         let userId = req['userInfo']['user-id'];
-        return this.cvsService.updateV2(id, updateCvDto, userId);
+        return this.cvsService.updateSse(id, updateCvDto, userId);
     }
     uploadFile(file, id) {
         console.log(file);
     }
     remove(id, req) {
         let userId = req['userInfo']['user-id'];
-        return this.cvsService.remove(id);
+        return this.cvsService.removeSse(id, userId);
+    }
+    sse(user) {
+        return (0, rxjs_1.fromEvent)(this.eventEmitter, cv_events_1.OPERATIONS.CV_ADD).pipe((0, rxjs_1.map)((payload) => {
+            console.log(payload);
+            if (user.id === payload.userId || user.roles.includes('admin'))
+                return;
+            new MessageEvent(cv_events_1.OPERATIONS.CV_ADD, { data: payload });
+        }));
     }
 };
 exports.CvsControllerV2 = CvsControllerV2;
@@ -217,11 +230,19 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], CvsControllerV2.prototype, "remove", null);
+__decorate([
+    (0, common_1.Sse)('sse'),
+    __param(0, (0, user_decorator_1.User)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], CvsControllerV2.prototype, "sse", null);
 exports.CvsControllerV2 = CvsControllerV2 = __decorate([
     (0, common_1.Controller)({
         path: 'cvs',
         version: '2',
     }),
-    __metadata("design:paramtypes", [cvs_service_1.CvsService])
+    __metadata("design:paramtypes", [cvs_service_1.CvsService,
+        event_emitter_1.EventEmitter2])
 ], CvsControllerV2);
 //# sourceMappingURL=cvs.controller.js.map

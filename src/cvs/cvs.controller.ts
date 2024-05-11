@@ -10,7 +10,8 @@ import {
   Req,
   ParseIntPipe,
   UploadedFile, UseInterceptors, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, UseGuards,
-  Controller
+  Controller,
+  Sse
 } from '@nestjs/common';
 import { CvsService } from './cvs.service';
 import { CreateCvDto } from './dto/create-cv.dto';
@@ -24,9 +25,10 @@ import {JwtAuthGuard} from "../authentication/Guards/jwt-auth.guard";
 import {Request} from "express";
 import {Roles} from "../authentication/decorators/roles.decorator";
 import {RolesAuthGuard} from "../authentication/Guards/role-auth.guard";
-import { Observable } from 'rxjs';
-import { OPERATIONS } from 'src/SseEv/cv.events';
-import { SseService } from 'src/SseEv/sseenv.service';
+import { Observable, fromEvent, map } from 'rxjs';
+import { EVENTS, OPERATIONS } from 'src/SseEv/cv.events';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { User } from 'src/decorators/user.decorator';
 
 
 @Controller(
@@ -92,6 +94,7 @@ export class CvsController {
 export class CvsControllerV2 {
   constructor(
       private readonly cvsService: CvsService,
+      private eventEmitter: EventEmitter2
   ) {}
 
   @Get("/random")
@@ -126,7 +129,7 @@ export class CvsControllerV2 {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCvDto: UpdateCvDto,@Req()req:Request) {
     let userId=req['userInfo']['user-id']
-    return this.cvsService.updateV2(id, updateCvDto,userId);
+    return this.cvsService.updateSse(id, updateCvDto,userId);
   }
 
   @Post('upload')
@@ -152,7 +155,23 @@ export class CvsControllerV2 {
   @Delete(':id')
   remove(@Param('id') id: string,@Req()req:Request) {
     let userId=req['userInfo']['user-id']
-    return this.cvsService.remove(id);
+    return this.cvsService.removeSse(id,userId);
+  }
+
+  @Sse('sse')
+  sse(@User() user) {
+    return fromEvent(this.eventEmitter, OPERATIONS.CV_ADD).pipe(
+      map((payload: any )=> 
+      {
+        console.log(payload)
+        if (user.id === payload.userId || user.roles.includes('admin'))
+          return 
+            new MessageEvent(OPERATIONS.CV_ADD, {data : payload})
+          
+        
+      }
+      )
+    );
   }
 
 }

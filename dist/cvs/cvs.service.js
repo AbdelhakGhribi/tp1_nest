@@ -20,14 +20,12 @@ const cv_entity_1 = require("./entities/cv.entity");
 const falso_1 = require("@ngneat/falso");
 const random_string_generator_util_1 = require("@nestjs/common/utils/random-string-generator.util");
 const user_entity_1 = require("../users/entities/user.entity");
-const sseenv_service_1 = require("../SseEv/sseenv.service");
 const cv_events_1 = require("../SseEv/cv.events");
 const event_emitter_1 = require("@nestjs/event-emitter");
 let CvsService = class CvsService {
-    constructor(cvRepository, userRepository, sseService, eventEmitter) {
+    constructor(cvRepository, userRepository, eventEmitter) {
         this.cvRepository = cvRepository;
         this.userRepository = userRepository;
-        this.sseService = sseService;
         this.eventEmitter = eventEmitter;
     }
     randomize() {
@@ -197,7 +195,6 @@ exports.CvsService = CvsService = __decorate([
     __param(1, (0, typeorm_1.InjectRepository)(user_entity_1.UserEntity)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
-        sseenv_service_1.SseService,
         event_emitter_1.EventEmitter2])
 ], CvsService);
 //# sourceMappingURL=cvs.service.js.map
