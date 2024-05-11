@@ -3,8 +3,24 @@ import { Repository } from 'typeorm';
 export declare class CvListener {
     private readonly historyRepository;
     constructor(historyRepository: Repository<HistoryEntity>);
-    handleCreation(payload: any): Promise<void>;
-    handleUpdate(payload: any): Promise<void>;
-    handleDelete(payload: any): Promise<void>;
-    handleHistory(action: string, payload: any): Promise<void>;
+    handleCreation(payload: any): Promise<{
+        action: string;
+        user: any;
+        cv: any;
+    } & HistoryEntity>;
+    handleUpdate(payload: any): Promise<{
+        action: string;
+        user: any;
+        cv: any;
+    } & HistoryEntity>;
+    handleDelete(payload: any): Promise<{
+        action: string;
+        user: any;
+        cv: any;
+    } & HistoryEntity>;
+    handleHistory(action: string, payload: any): Promise<{
+        action: string;
+        user: any;
+        cv: any;
+    } & HistoryEntity>;
 }

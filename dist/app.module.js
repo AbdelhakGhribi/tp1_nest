@@ -23,6 +23,7 @@ const serve_static_1 = require("@nestjs/serve-static");
 const authentication_module_1 = require("./authentication/authentication.module");
 const path = require("path");
 const event_emitter_1 = require("@nestjs/event-emitter");
+const history_entity_1 = require("./history/entities/history.entity");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(authentification_middleware_1.AuthentificationMiddleware)
@@ -42,7 +43,7 @@ exports.AppModule = AppModule = __decorate([
                 username: "root",
                 password: "",
                 database: "nest_test",
-                entities: [user_entity_1.UserEntity, skill_entity_1.SkillEntity, cv_entity_1.CvEntity],
+                entities: [user_entity_1.UserEntity, skill_entity_1.SkillEntity, cv_entity_1.CvEntity, history_entity_1.HistoryEntity],
                 synchronize: true,
             }),
             skills_module_1.SkillsModule,

@@ -25,14 +25,6 @@ __decorate([
     __metadata("design:type", String)
 ], HistoryEntity.prototype, "action", void 0);
 __decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], HistoryEntity.prototype, "userId", void 0);
-__decorate([
-    (0, typeorm_1.Column)(),
-    __metadata("design:type", String)
-], HistoryEntity.prototype, "cvId", void 0);
-__decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], HistoryEntity.prototype, "createdAt", void 0);

@@ -6,26 +6,30 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class CvListener {
-  constructor(
-              private readonly historyRepository: Repository<HistoryEntity>
-  ) {}
+  constructor(private readonly historyRepository: Repository<HistoryEntity>) {
+  }
+
   @OnEvent(OPERATIONS.CV_ADD)
   async handleCreation(payload: any) {
+    console.log("kotkot")
     return await this.handleHistory('CV_ADD', payload);
   }
+
   @OnEvent(OPERATIONS.CV_UPDATE)
   async handleUpdate(payload: any) {
     return await this.handleHistory('CV_UPDATE', payload);
   }
+
   @OnEvent(OPERATIONS.CV_DELETE)
   async handleDelete(payload: any) {
     return await this.handleHistory('CV_DELETE', payload);
   }
+
   async handleHistory(action: string, payload: any) {
+    console.log('kotkot');
     let result = await this.historyRepository.save({
-      action : action,
-      userId: payload.userId,
-      cvId: payload.cv.id,
+      action: action, user: payload.user, cv: payload.cv,
     });
+    return result;
   }
 }

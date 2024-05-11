@@ -19,6 +19,7 @@ let CvListener = class CvListener {
         this.historyRepository = historyRepository;
     }
     async handleCreation(payload) {
+        console.log("kotkot");
         return await this.handleHistory('CV_ADD', payload);
     }
     async handleUpdate(payload) {
@@ -28,11 +29,11 @@ let CvListener = class CvListener {
         return await this.handleHistory('CV_DELETE', payload);
     }
     async handleHistory(action, payload) {
+        console.log('kotkot');
         let result = await this.historyRepository.save({
-            action: action,
-            userId: payload.userId,
-            cvId: payload.cv.id,
+            action: action, user: payload.user, cv: payload.cv,
         });
+        return result;
     }
 };
 exports.CvListener = CvListener;

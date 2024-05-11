@@ -17,12 +17,6 @@ export class HistoryEntity {
     @Column()
     action: string;
 
-    @Column()
-    userId: string;
-  
-    @Column()
-    cvId: string;
-
     @CreateDateColumn()
     createdAt: Date;
 

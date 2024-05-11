@@ -58,7 +58,7 @@ export class CvsService {
 
   }
 
-  async createSse (createCvDto:CreateCvDto,userId:string){
+  async createSse (createCvDto:CreateCvDto, userId:string){
     const createdCv=await this.cvRepository.save(createCvDto);
     if (createdCv){
       this.eventEmitter.emit(OPERATIONS.CV_ADD,{
@@ -66,7 +66,7 @@ export class CvsService {
         cv:createdCv
       })
     }
-    return createdCv   
+    return createdCv
   }
 
 

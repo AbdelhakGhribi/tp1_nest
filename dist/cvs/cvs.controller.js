@@ -54,7 +54,7 @@ let CvsController = class CvsController {
 };
 exports.CvsController = CvsController;
 __decorate([
-    (0, common_1.Get)("/random"),
+    (0, common_1.Get)('/random'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -113,8 +113,7 @@ __decorate([
 ], CvsController.prototype, "remove", null);
 exports.CvsController = CvsController = __decorate([
     (0, common_1.Controller)({
-        path: 'cvs',
-        version: '1',
+        path: 'cvs', version: '1',
     }),
     __metadata("design:paramtypes", [cvs_service_1.CvsService])
 ], CvsController);
@@ -152,8 +151,8 @@ let CvsControllerV2 = class CvsControllerV2 {
     }
     sse(user) {
         return (0, rxjs_1.fromEvent)(this.eventEmitter, cv_events_1.OPERATIONS.CV_ADD).pipe((0, rxjs_1.map)((payload) => {
-            console.log(payload);
-            if (user.id === payload.userId || user.roles.includes('admin')) {
+            payload.userId = user;
+            if (user.id === payload.cv.userId || user.role === 'admin') {
                 return new MessageEvent(cv_events_1.OPERATIONS.CV_ADD, { data: payload });
             }
             else {
@@ -164,7 +163,7 @@ let CvsControllerV2 = class CvsControllerV2 {
 };
 exports.CvsControllerV2 = CvsControllerV2;
 __decorate([
-    (0, common_1.Get)("/random"),
+    (0, common_1.Get)('/random'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
@@ -212,13 +211,10 @@ __decorate([
 __decorate([
     (0, common_1.Post)('upload'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
-        dest: 'uploads/'
+        dest: 'uploads/',
     })),
     __param(0, (0, common_1.UploadedFile)(new common_1.ParseFilePipe({
-        validators: [
-            new common_1.MaxFileSizeValidator({ maxSize: 1000000 }),
-            new common_1.FileTypeValidator({ fileType: /.jpeg|jpg|png$/ })
-        ]
+        validators: [new common_1.MaxFileSizeValidator({ maxSize: 1000000 }), new common_1.FileTypeValidator({ fileType: /.jpeg|jpg|png$/ })],
     }))),
     __param(1, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -234,7 +230,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], CvsControllerV2.prototype, "remove", null);
 __decorate([
-    (0, common_1.Sse)('sse'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Sse)('sse/testcvs'),
     __param(0, (0, user_decorator_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
@@ -242,10 +239,8 @@ __decorate([
 ], CvsControllerV2.prototype, "sse", null);
 exports.CvsControllerV2 = CvsControllerV2 = __decorate([
     (0, common_1.Controller)({
-        path: 'cvs',
-        version: '2',
+        path: 'cvs', version: '2',
     }),
-    __metadata("design:paramtypes", [cvs_service_1.CvsService,
-        event_emitter_1.EventEmitter2])
+    __metadata("design:paramtypes", [cvs_service_1.CvsService, event_emitter_1.EventEmitter2])
 ], CvsControllerV2);
 //# sourceMappingURL=cvs.controller.js.map
